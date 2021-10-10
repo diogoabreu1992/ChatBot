@@ -91,7 +91,7 @@ def done(update: Update, context: CallbackContext) -> int:
 def main() -> None:
     """Run the bot."""
     # Create the Updater and pass it your bot's token.
-    updater = Updater("2012994382:AAEPOgIsFwapqYCbU7Zkl8nTSj7KsfsV5xY")
+    updater = Updater("2012994382:AAFIZV46xau6EEY6Bd82YMVNb-MIXx5nRQ0")
 
     # Get the dispatcher to register handlers
     dispatcher = updater.dispatcher
