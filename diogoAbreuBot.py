@@ -86,7 +86,7 @@ def done(update: Update, context: CallbackContext) -> int:
         reply_markup=ReplyKeyboardRemove(),
     )
     
-    client.messages.create(from="+18454787737",body="Sua consulta foi marcada com Sucesso.",to="numero destino")
+    client.messages.create(from="+18454787737",body="Sua consulta foi marcada com Sucesso.",to="+5592993330822")
 
     user_data.clear()
     return ConversationHandler.END
