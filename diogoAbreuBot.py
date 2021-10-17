@@ -11,6 +11,8 @@ from telegram.ext import (
     CallbackContext,
 )
 
+from twilio.rest import Client
+
 # Enable logging
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
@@ -22,8 +24,8 @@ CHOOSING, TYPING_REPLY, TYPING_CHOICE = range(3)
 
 reply_keyboard = [
     ['Nome'],
-    ['Genero', 'Idade'],
-    ['Altura', 'peso'],
+    ['CPF', 'RG'],
+    ['Numero'],
     ['Tipo de especialidade'],
     ['Enviar'],
 ]
@@ -31,13 +33,13 @@ markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
 
 
 def facts_to_str(user_data: Dict[str, str]) -> str:
-    """Helper function for formatting the gathered user info."""
+    """Função auxiliar para formatar as informações coletadas do usuário."""
     facts = [f'{key} - {value}' for key, value in user_data.items()]
     return "\n".join(facts).join(['\n', '\n'])
 
 
 def start(update: Update, context: CallbackContext) -> int:
-    """Start the conversation and ask user for input."""
+    """Inicie a conversa e peça informações ao usuário."""
     update.message.reply_text(
         "Olá! Sou seu bot de atendimento. Precisamos de algumas infomações para marcar sua consulta: ",
         reply_markup=markup,
@@ -47,7 +49,7 @@ def start(update: Update, context: CallbackContext) -> int:
 
 
 def regular_choice(update: Update, context: CallbackContext) -> int:
-    """Ask the user for info about the selected predefined choice."""
+    """Peça ao usuário informações sobre a escolha predefinida selecionada."""
     text = update.message.text
     context.user_data['choice'] = text
     update.message.reply_text(f'Você escolheu {text.lower()}. Informe:')
@@ -56,7 +58,7 @@ def regular_choice(update: Update, context: CallbackContext) -> int:
 
 
 def received_information(update: Update, context: CallbackContext) -> int:
-    """Store info provided by user and ask for the next category."""
+    """Armazene informações fornecidas pelo usuário e solicite a próxima categoria."""
     user_data = context.user_data
     text = update.message.text
     category = user_data['choice']
@@ -74,7 +76,7 @@ def received_information(update: Update, context: CallbackContext) -> int:
 
 
 def done(update: Update, context: CallbackContext) -> int:
-    """Display the gathered info and end the conversation."""
+    """Exiba as informações coletadas e encerre a conversa."""
     user_data = context.user_data
     if 'choice' in user_data:
         del user_data['choice']
@@ -83,26 +85,33 @@ def done(update: Update, context: CallbackContext) -> int:
         f"Suas informações:\n{facts_to_str(user_data)}\nSua consulta foi marcada!\n\n[IMPORTANTE]\nVamos avaliar seus dados, \nAguarde confirmação por SMS.",
         reply_markup=ReplyKeyboardRemove(),
     )
+    
+    client.messages.create(from="+18454787737",body="Sua consulta foi marcada com Sucesso.",to="numero destino")
 
     user_data.clear()
     return ConversationHandler.END
 
 
 def main() -> None:
+    """chaves do sms"""
+    account_sid = "AC738ef6ed068b6a53304d47a87cb133c2"
+    auth_token = "7452730d9a49d1fc9634fd71b9ca7921"
+    client = Client(account_sid,auth_token)
+    
     """Run the bot."""
-    # Create the Updater and pass it your bot's token.
+    # Crie o Updater e passe a ele o token do seu bot.
     updater = Updater("2012994382:AAFIZV46xau6EEY6Bd82YMVNb-MIXx5nRQ0")
 
-    # Get the dispatcher to register handlers
+    # Faça com que o despachante registre manipuladores
     dispatcher = updater.dispatcher
 
-    # Add conversation handler with the states CHOOSING, TYPING_CHOICE and TYPING_REPLY
+    # Adicione o gerenciador de conversas com os estados CHOOSING, TYPING_CHOICE e TYPING_REPLY
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('start', start)],
         states={
             CHOOSING: [
                 MessageHandler(
-                    Filters.regex('^(Nome|Genero|Idade|Altura|peso|Tipo de especialidade)$'), regular_choice
+                    Filters.regex('^(Nome|CPF|RG|Numero|Tipo de especialidade)$'), regular_choice
                 ),
             ],
             TYPING_CHOICE: [
@@ -124,10 +133,7 @@ def main() -> None:
 
     # Start the Bot
     updater.start_polling()
-
-    # Run the bot until you press Ctrl-C or the process receives SIGINT,
-    # SIGTERM or SIGABRT. This should be used most of the time, since
-    # start_polling() is non-blocking and will stop the bot gracefully.
+    
     updater.idle()
 
 
