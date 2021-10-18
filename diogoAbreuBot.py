@@ -88,11 +88,13 @@ def done(update: Update, context: CallbackContext) -> int:
         f"Suas informações:\n{facts_to_str(user_data)}\nSua consulta foi marcada!\n\n[IMPORTANTE]\nVamos avaliar seus dados, \nAguarde confirmação por SMS.",
         reply_markup=ReplyKeyboardRemove(),
     )
-    """chaves do sms"""
-    account_sid = "AC738ef6ed068b6a53304d47a87cb133c2"
-    auth_token = "7452730d9a49d1fc9634fd71b9ca7921"
-    client = Client(account_sid,auth_token)
-    client.messages.create(from_="+18454787737",body="Sua consulta foi marcada com Sucesso.",to=user_data.get("Numero"))
+    
+    if(user_data.get("Numero")!=None):
+        """chaves do sms"""
+        account_sid = "AC738ef6ed068b6a53304d47a87cb133c2"
+        auth_token = "7452730d9a49d1fc9634fd71b9ca7921"
+        client = Client(account_sid,auth_token)
+        client.messages.create(from_="+18454787737",body="Sua consulta foi marcada com Sucesso.",to=user_data.get("Numero"))
 
     user_data.clear()
     return ConversationHandler.END
