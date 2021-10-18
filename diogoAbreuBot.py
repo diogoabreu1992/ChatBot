@@ -102,7 +102,7 @@ def main() -> None:
     
     """Run the bot."""
     # Crie o Updater e passe a ele o token do seu bot.
-    updater = Updater("2012994382:AAFIZV46xau6EEY6Bd82YMVNb-MIXx5nRQ0")
+    updater = Updater("2012994382:AAG22TgNT6jiPHfl6lfMmpIGmLc7xstnVPQ")
 
     # Faça com que o despachante registre manipuladores
     dispatcher = updater.dispatcher
