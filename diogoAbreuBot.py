@@ -52,7 +52,10 @@ def regular_choice(update: Update, context: CallbackContext) -> int:
     """Peça ao usuário informações sobre a escolha predefinida selecionada."""
     text = update.message.text
     context.user_data['choice'] = text
-    update.message.reply_text(f'Você escolheu {text.lower()}. Informe:')
+    if(text.lower() == "numero"):
+        update.message.reply_text(f'Você escolheu {text.lower()}.\nInforme seguindo o padrão Internacional:\nEx:(+55929XXXXXXXX)\n')
+    else:
+        update.message.reply_text(f'Você escolheu {text.lower()}.\nInforme:')
 
     return TYPING_REPLY
 
@@ -85,18 +88,17 @@ def done(update: Update, context: CallbackContext) -> int:
         f"Suas informações:\n{facts_to_str(user_data)}\nSua consulta foi marcada!\n\n[IMPORTANTE]\nVamos avaliar seus dados, \nAguarde confirmação por SMS.",
         reply_markup=ReplyKeyboardRemove(),
     )
-    
-    client.messages.create(from="+18454787737",body="Sua consulta foi marcada com Sucesso.",to="+5592993330822")
+    """chaves do sms"""
+    account_sid = "AC738ef6ed068b6a53304d47a87cb133c2"
+    auth_token = "7452730d9a49d1fc9634fd71b9ca7921"
+    client = Client(account_sid,auth_token)
+    client.messages.create(from_="+18454787737",body="Sua consulta foi marcada com Sucesso.",to=user_data.get("Numero"))
 
     user_data.clear()
     return ConversationHandler.END
 
 
 def main() -> None:
-    """chaves do sms"""
-    account_sid = "AC738ef6ed068b6a53304d47a87cb133c2"
-    auth_token = "7452730d9a49d1fc9634fd71b9ca7921"
-    client = Client(account_sid,auth_token)
     
     """Run the bot."""
     # Crie o Updater e passe a ele o token do seu bot.
