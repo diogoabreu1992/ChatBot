@@ -53,9 +53,9 @@ def regular_choice(update: Update, context: CallbackContext) -> int:
     text = update.message.text
     context.user_data['choice'] = text
     if(text.lower() == "numero"):
-        update.message.reply_text(f'Você escolheu {text.lower()}.\nInforme seguindo o padrão Internacional:\nEx:(+55929XXXXXXXX)\n')
+        update.message.reply_text(f'Você escolheu {text.lower()}.\nInforme seguindo o padrão Internacional:')
     else:
-        update.message.reply_text(f'Você escolheu {text.lower()}.\nInforme:')
+        update.message.reply_text(f'Você escolheu {text.lower()}. Informe:')
 
     return TYPING_REPLY
 
@@ -84,17 +84,18 @@ def done(update: Update, context: CallbackContext) -> int:
     if 'choice' in user_data:
         del user_data['choice']
 
-    update.message.reply_text(
-        f"Suas informações:\n{facts_to_str(user_data)}\nSua consulta foi marcada!\n\n[IMPORTANTE]\nVamos avaliar seus dados, \nAguarde confirmação por SMS.",
-        reply_markup=ReplyKeyboardRemove(),
-    )
-    
-    if(user_data.get("Numero")!=None):
-        """chaves do sms"""
+    if(user_data.get("Numero")==None or user_data.get("Nome")==None or user_data.get("CPF")==None or user_data.get("RG")==None or user_data.get("Tipo de especialidade")==None):
+        update.message.reply_text(f'Precisamos de todas as infomações. Tente novamente: clique aqui-> /start.')
+    else:
+        update.message.reply_text(
+            f"Suas informações:\n{facts_to_str(user_data)}\nSua consulta foi marcada!\n\n[IMPORTANTE]\nVamos avaliar seus dados, \nAguarde confirmação por SMS.",
+            reply_markup=ReplyKeyboardRemove(),
+        )
         account_sid = "AC738ef6ed068b6a53304d47a87cb133c2"
         auth_token = "7452730d9a49d1fc9634fd71b9ca7921"
         client = Client(account_sid,auth_token)
         client.messages.create(from_="+18454787737",body="Sua consulta foi marcada com Sucesso.",to=user_data.get("Numero"))
+        update.message.reply_text(f'Nova Solicitação seu numero = {user_data.get("Numero")}: clique aqui -> /start')
 
     user_data.clear()
     return ConversationHandler.END
