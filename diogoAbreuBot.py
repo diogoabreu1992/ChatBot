@@ -95,7 +95,7 @@ def done(update: Update, context: CallbackContext) -> int:
         auth_token = "7452730d9a49d1fc9634fd71b9ca7921"
         client = Client(account_sid,auth_token)
         mensagem = client.messages.create(from_="+12184439389",body="Sua consulta foi marcada com Sucesso.",to=user_data.get("Numero"))
-        print(mensagem_sid)
+        print("diogo")
         update.message.reply_text(f'Novo Agendamento{mensagem.sid}: clique aqui -> /start')
 
     user_data.clear()
