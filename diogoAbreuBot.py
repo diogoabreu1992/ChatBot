@@ -53,7 +53,7 @@ def regular_choice(update: Update, context: CallbackContext) -> int:
     text = update.message.text
     context.user_data['choice'] = text
     if(text.lower() == "numero"):
-        update.message.reply_text(f'Você escolheu {text.lower()}.\nInforme seguindo o padrão Internacional:')
+        update.message.reply_text(f'Você escolheu {text.lower()}.\nInforme seguindo o padrão Internacional:\nEx: +5592999999999')
     else:
         update.message.reply_text(f'Você escolheu {text.lower()}. Informe:')
 
@@ -95,7 +95,7 @@ def done(update: Update, context: CallbackContext) -> int:
         auth_token = "7452730d9a49d1fc9634fd71b9ca7921"
         client = Client(account_sid,auth_token)
         client.messages.create(from_="+18454787737",body="Sua consulta foi marcada com Sucesso.",to=user_data.get("Numero"))
-        update.message.reply_text(f'Nova Solicitação seu numero = {user_data.get("Numero")}: clique aqui -> /start')
+        update.message.reply_text(f'Novo Agendamento: clique aqui -> /start')
 
     user_data.clear()
     return ConversationHandler.END
