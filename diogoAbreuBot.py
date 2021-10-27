@@ -12,6 +12,7 @@ from telegram.ext import (
 )
 
 from twilio.rest import Client
+from twilio.base.exceptions import TwilioRestException
 
 # Enable logging
 logging.basicConfig(
@@ -94,7 +95,14 @@ def done(update: Update, context: CallbackContext) -> int:
         account_sid = "AC738ef6ed068b6a53304d47a87cb133c2"
         auth_token = "7452730d9a49d1fc9634fd71b9ca7921"
         client = Client(account_sid,auth_token)
-        message = client.messages.create(from_="+12184439389",body="Sua consulta foi marcada com Sucesso.",to=user_data.get("Numero"))
+        try:
+            # This could potentially throw an exception!
+            message = client.messages.create(
+                to=user_data.get("Numero"), 
+                from_="+12184439389",
+                body="Hello there!")
+        except TwilioRestException as e:
+            update.message.reply_text(f'Numero invalido, tente novamente')
         update.message.reply_text(f'Novo Agendamento: clique aqui -> /start')
 
     user_data.clear()
