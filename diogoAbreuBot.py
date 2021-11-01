@@ -100,7 +100,7 @@ def done(update: Update, context: CallbackContext) -> int:
             message = client.messages.create(
                 to=user_data.get("Numero"), 
                 from_="+12184439389",
-                body="Hello there!")
+                body="Sua consulta foi marcada com sucesso, obrigado por usar nosso serviço de bot!")
         except TwilioRestException as e:
             update.message.reply_text(f'Numero invalido, tente novamente')
         update.message.reply_text(f'Novo Agendamento: clique aqui -> /start')
